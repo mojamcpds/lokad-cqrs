@@ -17,10 +17,10 @@ namespace Lokad.Cqrs.SqlViews
 {
 	public sealed class SqlViewDialect
 	{
-		readonly IDbPartitionManager _manager;
+		readonly IPartitionViews _manager;
 		readonly IDataSerializer _serializer;
 
-		public SqlViewDialect(IDataSerializer serializer, IDbPartitionManager manager)
+		public SqlViewDialect(IDataSerializer serializer, IPartitionViews manager)
 		{
 			_serializer = serializer;
 			_manager = manager;
@@ -83,12 +83,12 @@ namespace Lokad.Cqrs.SqlViews
 				AddByteParam(cmd, "@data", mem.ToArray());
 				paramList.AddTuple("[Data]", "@data");
 			}
-			if (_manager.ImplicitPartition)
+			if (_manager.PartitionsShareContainer)
 			{
 				paramList.AddTuple("[Partition]", "@part");
 				AddStringParam(cmd, "@part", partition);
 			}
-			if (_manager.ImplicitView)
+			if (_manager.ViewsShareContainer)
 			{
 				paramList.AddTuple("[View]", "@view");
 				AddStringParam(cmd, "@view", _manager.GetViewName(type));
@@ -98,7 +98,7 @@ namespace Lokad.Cqrs.SqlViews
 			var columns = paramList.Select(p => p.Key).Join(",");
 			var args = paramList.Select(p => p.Value).Join(",");
 			builder
-				.Append("INSERT INTO " + _manager.GetTable(type, partition))
+				.Append("INSERT INTO " + _manager.GetContainerName(type, partition))
 				.Append(" (" + columns + ") ")
 				.Append("VALUES (" + args + ")");
 			cmd.CommandText = builder.ToString();
@@ -107,7 +107,7 @@ namespace Lokad.Cqrs.SqlViews
 
 		void UpdateRecord(IDbCommand cmd, Type type, string partition, string identity, Action<Stream> data)
 		{
-			var builder = new StringBuilder("UPDATE " + _manager.GetTable(type, partition));
+			var builder = new StringBuilder("UPDATE " + _manager.GetContainerName(type, partition));
 			builder.Append(" SET Data=@data");
 			using (var mem = new MemoryStream())
 			{
@@ -123,7 +123,7 @@ namespace Lokad.Cqrs.SqlViews
 		public void DeleteRecord(IDbCommand cmd, Type type, string partition, string identity)
 		{
 			var builder = new StringBuilder();
-			builder.Append("DELETE " + _manager.GetTable(type, partition));
+			builder.Append("DELETE " + _manager.GetContainerName(type, partition));
 			AddFilterClause(cmd, builder, type, partition, new IdentityConstraint(ConstraintOperand.Equal, identity));
 			cmd.CommandText = builder.ToString();
 			cmd.ExecuteNonQuery();
@@ -132,7 +132,7 @@ namespace Lokad.Cqrs.SqlViews
 		public void DeletePartition(IDbCommand cmd, Type type, string partition)
 		{
 			var builder = new StringBuilder();
-			builder.Append("DELETE " + _manager.GetTable(type, partition));
+			builder.Append("DELETE " + _manager.GetContainerName(type, partition));
 			AddFilterClause(cmd, builder, type, partition, Maybe<IdentityConstraint>.Empty);
 			cmd.CommandText = builder.ToString();
 			cmd.ExecuteNonQuery();
@@ -143,12 +143,12 @@ namespace Lokad.Cqrs.SqlViews
 		{
 			var clause = new List<string>();
 
-			if (_manager.ImplicitPartition)
+			if (_manager.PartitionsShareContainer)
 			{
 				clause.Add("Partition=@part");
 				AddStringParam(cmd, "@part", partition);
 			}
-			if (_manager.ImplicitView)
+			if (_manager.ViewsShareContainer)
 			{
 				clause.Add("[View]=@view");
 				AddStringParam(cmd, "@view", _manager.GetViewName(type));
@@ -192,7 +192,7 @@ namespace Lokad.Cqrs.SqlViews
 
 			query.Combine(q => q.RecordLimit).Apply(i => txt.Append(" TOP " + i + " "));
 
-			txt.Append("Data, Id FROM " + _manager.GetTable(type, partition));
+			txt.Append("Data, Id FROM " + _manager.GetContainerName(type, partition));
 
 			AddFilterClause(cmd, txt, type, partition, query.Combine(q => q.Constraint));
 

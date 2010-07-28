@@ -14,7 +14,7 @@ namespace Lokad.Cqrs.SqlViews.Tests
 	public abstract class SimpleSqlFixture
 	{
 
-		public DbPartitionManagerForSimpleSql Manager { get; private set; }
+		public PartitionWithSimpleSql Manager { get; private set; }
 		public IPublishViews Publish { get; private set; }
 		public IQueryViews Query { get; private set; }
 
@@ -32,7 +32,7 @@ namespace Lokad.Cqrs.SqlViews.Tests
 			var name = "View_Table";
 
 			var serializer = new ProtoBufSerializer(_views);
-			Manager = new DbPartitionManagerForSimpleSql(conn, IsolationLevel.ReadCommitted, serializer, name);
+			Manager = new PartitionWithSimpleSql(conn, IsolationLevel.ReadCommitted, serializer, name);
 			Manager.CreateIfNotExist();
 
 			var dialect = new SqlViewDialect(serializer, Manager);

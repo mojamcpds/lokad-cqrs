@@ -12,7 +12,9 @@ using Lokad.Serialization;
 
 namespace Lokad.Cqrs.SqlViews
 {
-	public sealed class DbPartitionManagerForSimpleSql : IDbPartitionManager
+	public sealed class PartitionWithSimpleSql : 
+		IPartitionViews,
+		IDbPartitionExecutor
 	{
 		readonly string _connection;
 		readonly IsolationLevel _isolationLevel;
@@ -20,7 +22,7 @@ namespace Lokad.Cqrs.SqlViews
 		readonly string _tableName;
 
 
-		public DbPartitionManagerForSimpleSql(string connection, IsolationLevel isolationLevel, IDataContractMapper mapper,
+		public PartitionWithSimpleSql(string connection, IsolationLevel isolationLevel, IDataContractMapper mapper,
 			string tableName)
 		{
 			_connection = connection;
@@ -45,7 +47,7 @@ namespace Lokad.Cqrs.SqlViews
 			}
 		}
 
-		public string GetTable(Type type, string partition)
+		public string GetContainerName(Type type, string partition)
 		{
 			return _tableName;
 		}
@@ -55,12 +57,12 @@ namespace Lokad.Cqrs.SqlViews
 			return _mapper.GetContractNameByType(type).GetValue(() => type.Name);
 		}
 
-		public bool ImplicitPartition
+		public bool PartitionsShareContainer
 		{
 			get { return true; }
 		}
 
-		public bool ImplicitView
+		public bool ViewsShareContainer
 		{
 			get { return true; }
 		}
