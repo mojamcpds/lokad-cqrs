@@ -12,9 +12,9 @@ namespace Lokad.Cqrs.SqlViews
 	public sealed class PublishSqlViews : IPublishViews
 	{
 		readonly SqlViewDialect _dialect;
-		readonly IDbPartitionManager _manager;
+		readonly IDbPartitionExecutor _manager;
 
-		public PublishSqlViews(IDbPartitionManager manager, SqlViewDialect dialect)
+		public PublishSqlViews(IDbPartitionExecutor manager, SqlViewDialect dialect)
 		{
 			_manager = manager;
 			_dialect = dialect;

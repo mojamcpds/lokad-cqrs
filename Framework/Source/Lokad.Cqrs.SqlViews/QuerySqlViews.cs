@@ -17,9 +17,9 @@ namespace Lokad.Cqrs.SqlViews
 	public sealed class QuerySqlViews : IQueryViews
 	{
 		readonly SqlViewDialect _dialect;
-		readonly IDbPartitionManager _manager;
+		readonly IDbPartitionExecutor _manager;
 
-		public QuerySqlViews(IDbPartitionManager manager, SqlViewDialect dialect)
+		public QuerySqlViews(IDbPartitionExecutor manager, SqlViewDialect dialect)
 		{
 			_manager = manager;
 			_dialect = dialect;

@@ -7,7 +7,6 @@
 
 using System;
 using Autofac;
-using Autofac.Core;
 using Lokad.Cqrs.Consume.Build;
 using Lokad.Cqrs.Domain.Build;
 using Lokad.Cqrs.PubSub.Build;
@@ -17,16 +16,15 @@ using Lokad.Cqrs.Sender.Build;
 using Lokad.Cqrs.Serialization;
 using Lokad.Cqrs.Transport;
 using Lokad.Diagnostics;
-using Lokad.Quality;
 using Lokad.Settings;
-using Microsoft.WindowsAzure;
 
 namespace Lokad.Cqrs
 {
 	/// <summary>
 	/// Fluent API for creating and configuring <see cref="ICloudEngineHost"/>
 	/// </summary>
-	public class CloudEngineBuilder : ISyntax<ContainerBuilder>
+	public class CloudEngineBuilder :
+		ISyntax<ContainerBuilder>
 	{
 		readonly ContainerBuilder _builder = new ContainerBuilder();
 
@@ -43,6 +41,11 @@ namespace Lokad.Cqrs
 			_builder.RegisterType<AzureQueueTransport>().As<IMessageTransport>();
 			_builder.RegisterType<BinaryMessageSerializer>().As<IMessageSerializer>().SingleInstance();
 			_builder.RegisterType<CloudSettingsProvider>().As<IProfileSettings, ISettingsProvider>().SingleInstance();
+		}
+
+		public ContainerBuilder Target
+		{
+			get { return _builder; }
 		}
 
 		/// <summary>
@@ -103,11 +106,6 @@ namespace Lokad.Cqrs
 		{
 			var container = _builder.Build();
 			return container.Resolve<ICloudEngineHost>(TypedParameter.From(container));
-		}
-
-		public ContainerBuilder Target
-		{
-			get { return _builder; }
 		}
 	}
 }

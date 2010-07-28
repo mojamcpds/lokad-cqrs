@@ -10,12 +10,8 @@ using System.Data;
 
 namespace Lokad.Cqrs.SqlViews
 {
-	public interface IDbPartitionManager
+	public interface IDbPartitionExecutor
 	{
-		bool ImplicitPartition { get; }
-		bool ImplicitView { get; }
-		string GetTable(Type type, string partition);
-		string GetViewName(Type type);
 		void Execute(Type type, string partition, Action<IDbCommand> exec);
 	}
 }
