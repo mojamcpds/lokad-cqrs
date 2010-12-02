@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FD6C8202-F530-4C09-8889-28DC383965AA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lokad.Cqrs</RootNamespace>
+    <AssemblyName>Lokad.Cqrs.Azure</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Lokad.Cqrs.Azure.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Lokad.Cqrs.Azure.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\Library\Autofac\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\Library\ProtoBuf-net\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Build\AutofacBuilderForAzure.cs" />
+    <Compile Include="Build\AutofacBuilderForLogging.cs" />
+    <Compile Include="Build\AutofacBuilderForSerialization.cs" />
+    <Compile Include="Build\BuilderExtensions.cs" />
+    <Compile Include="Build\Client\CloudClient.cs" />
+    <Compile Include="Build\Client\CloudClientBuilder.cs" />
+    <Compile Include="Build\CloudSettingsProvider.cs" />
+    <Compile Include="Build\Engine\CloudEngineBuilder.cs" />
+    <Compile Include="Build\Engine\CloudEngineRole.cs" />
+    <Compile Include="Build\Engine\CloudEngineHost.cs" />
+    <Compile Include="Build\ExtendSyntaxForCloudStorageAccount.cs" />
+    <Compile Include="Consume\BlobExceptionLogger.cs" />
+    <Compile Include="Consume\ConfigureBlobSavingOnException.cs" />
+    <Compile Include="Consume\ConfigureNotificationOnException.cs" />
+    <Compile Include="Consume\DispatchesMultipleMessagesToSharedScope.cs" />
+    <Compile Include="Consume\DispatchesSingleMessage.cs" />
+    <Compile Include="Storage\BlobStorageUtil.cs" />
+    <Compile Include="Storage\SuppressFlushForStream.cs" />
+    <Compile Include="Views\FixedTypeDiscovery.cs" />
+    <Compile Include="Views\ViewBuildModule.cs" />
+    <Compile Include="Storage\BlobStorageContainer.cs" />
+    <Compile Include="Storage\BlobStorageItem.cs" />
+    <Compile Include="Build\SimpleMessageProfiler.cs" />
+    <Compile Include="Build\Manager\CloudManagerBuilder.cs" />
+    <Compile Include="Consume\HandleMessagesModule.cs" />
+    <Compile Include="Domain\DomainAwareMessageProfiler.cs" />
+    <Compile Include="Queue\QueueErrors.cs" />
+    <Compile Include="Sender\DefaultMessageClient.cs" />
+    <Compile Include="Infrastructure\ExtendIComponentContext.cs" />
+    <Compile Include="Scheduled\DefaultTaskDispatcher.cs" />
+    <Compile Include="Scheduled\ScheduledModule.cs" />
+    <Compile Include="Sender\SenderModule.cs" />
+    <Compile Include="Domain\DomainBuildModule.cs" />
+    <Compile Include="PubSub\BuildPubSubModule.cs" />
+    <Compile Include="PubSub\SubscribeSyntax.cs" />
+    <Compile Include="Queue\AzureQueueFactory.cs" />
+    <Compile Include="Queue\AzureQueueReference.cs" />
+    <Compile Include="Storage\EntityStorage.cs" />
+    <Compile Include="Transport\AzureQueuePolicy.cs" />
+    <Compile Include="Transport\AzureQueueTransportConfig.cs" />
+    <Compile Include="Queue\AzureMessageQueue.cs" />
+    <Compile Include="Transport\AzureQueueTransport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queue\TransactionCommitDeletesMessage.cs" />
+    <Compile Include="Queue\TransactionCommitAddsMessage.cs" />
+    <Compile Include="Queue\SubQueueType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lokad.Cqrs.Shared\Lokad.Cqrs.Shared.csproj">
+      <Project>{5B606929-E54C-4D73-AE8A-B742C9BE72E4}</Project>
+      <Name>Lokad.Cqrs.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lokad.Cqrs.Storage\Lokad.Cqrs.Storage.csproj">
+      <Project>{00CB3AB5-5BE9-432C-A589-0A7A436D5F8F}</Project>
+      <Name>Lokad.Cqrs.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lokad.Cqrs.Core\Lokad.Cqrs.Core.csproj">
+      <Project>{CE441C5A-2DC1-4639-81ED-5B4CAC649BD9}</Project>
+      <Name>Lokad.Cqrs.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\SharedKey.snk">
+      <Link>SharedKey.snk</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
