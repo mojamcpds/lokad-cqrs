@@ -1,36 +1,43 @@
-﻿using System;
+﻿#region (c) 2010 Lokad Open Source - New BSD License 
+
+// Copyright (c) Lokad 2010, http://www.lokad.com
+// This code is released as Open Source under the terms of the New BSD Licence
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Lokad
 {
-	public sealed class Filter<TItem>
-	{
-		readonly HashSet<Func<TItem, bool>> _filters = new HashSet<Func<TItem, bool>>();
+    public sealed class Filter<TItem>
+    {
+        readonly HashSet<Func<TItem, bool>> _filters = new HashSet<Func<TItem, bool>>();
 
-		public bool Any()
-		{
-			return _filters.Any();
-		}
+        public bool Any()
+        {
+            return _filters.Any();
+        }
 
-		public Filter<TItem> Where(Func<TItem, bool> filter)
-		{
-			_filters.Add(filter);
-			return this;
-		}
+        public Filter<TItem> Where(Func<TItem, bool> filter)
+        {
+            _filters.Add(filter);
+            return this;
+        }
 
-		public IEnumerable<TItem> Apply(IEnumerable<TItem> types)
-		{
-			var func = BuildFilter();
-			return types.Where(func);
-		}
+        public IEnumerable<TItem> Apply(IEnumerable<TItem> types)
+        {
+            var func = BuildFilter();
+            return types.Where(func);
+        }
 
-		public Func<TItem, bool> BuildFilter()
-		{
-			if (_filters.Count == 0)
-				return item => true;
+        public Func<TItem, bool> BuildFilter()
+        {
+            if (_filters.Count == 0)
+                return item => true;
 
-			return item => _filters.All(func => func(item));
-		}
-	}
+            return item => _filters.All(func => func(item));
+        }
+    }
 }
