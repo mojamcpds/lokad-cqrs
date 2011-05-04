@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 
 namespace Lokad
 {
@@ -48,7 +49,10 @@ namespace Lokad
             }
             catch (Exception ex)
             {
-                throw Errors.Resolution(typeof (TValue), key, ex);
+                Type valueType = typeof (TValue);
+                var s = string.Format(CultureInfo.InvariantCulture, "Error while resolving {0} with key '{1}'", valueType,
+                    (object) key);
+                throw new ResolutionException(s, ex);
             }
         }
     }

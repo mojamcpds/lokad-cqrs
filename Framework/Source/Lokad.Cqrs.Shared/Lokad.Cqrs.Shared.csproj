@@ -48,7 +48,6 @@
     <Compile Include="Default\IMessage.cs" />
     <Compile Include="Default\IScheduledTask.cs" />
     <Compile Include="DisposableAction.cs" />
-    <Compile Include="Enforce.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="Extensions\ArrayExtensionsForLinq.cs" />
     <Compile Include="Extensions\ExtendArray.cs" />
@@ -102,8 +101,6 @@
     <Compile Include="Range.cs" />
     <Compile Include="Reflection\Express.cs" />
     <Compile Include="Reflection\ILHelper.cs" />
-    <Compile Include="Reflection\Reflect.cs" />
-    <Compile Include="Reflection\ReflectCache.cs" />
     <Compile Include="Reflection\ReflectLambdaException.cs" />
     <Compile Include="ResolutionException.cs" />
     <Compile Include="ISettingsProvider.cs" />

@@ -28,7 +28,11 @@ namespace Lokad.Cqrs.Queue
         {
             get
             {
-                Enforce.That(State == GetMessageResultState.Exception, "State should be in error mode");
+                bool check = State == GetMessageResultState.Exception;
+                if (!check)
+                {
+                    throw Errors.InvalidOperation("Failed assertion '{0}'", "State should be in error mode");
+                }
                 return _exception;
             }
         }
@@ -37,7 +41,11 @@ namespace Lokad.Cqrs.Queue
         {
             get
             {
-                Enforce.That(State == GetMessageResultState.Success, "State should be in success");
+                bool check = State == GetMessageResultState.Success;
+                if (!check)
+                {
+                    throw Errors.InvalidOperation("Failed assertion '{0}'", "State should be in success");
+                }
                 return _message;
             }
         }
