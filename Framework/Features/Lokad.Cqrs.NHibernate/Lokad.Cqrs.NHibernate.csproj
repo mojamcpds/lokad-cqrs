@@ -35,9 +35,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\Library\Autofac\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\..\Library\NHibernate.Core\NHibernate.dll</HintPath>
     </Reference>
@@ -47,16 +44,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtendSyntax.cs" />
     <Compile Include="NHibernateModule.cs" />
     <Compile Include="NHibernateStarter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Lokad.Cqrs.Shared\Lokad.Cqrs.Shared.csproj">
-      <Project>{5B606929-E54C-4D73-AE8A-B742C9BE72E4}</Project>
-      <Name>Lokad.Cqrs.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="_ReadMe.txt" />
