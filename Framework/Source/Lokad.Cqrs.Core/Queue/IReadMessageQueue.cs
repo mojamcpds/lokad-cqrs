@@ -9,12 +9,12 @@ using System;
 
 namespace Lokad.Cqrs.Queue
 {
-	public interface IReadMessageQueue
-	{
-		Uri Uri { get; }
-		void Init();
-		GetMessageResult GetMessage();
-		void AckMessage(UnpackedMessage message);
-		void DiscardMessage(UnpackedMessage message);
-	}
+    public interface IReadMessageQueue
+    {
+        Uri Uri { get; }
+        void Init();
+        GetMessageResult GetMessage();
+        void AckMessage(UnpackedMessage message);
+        void DiscardMessage(UnpackedMessage message);
+    }
 }

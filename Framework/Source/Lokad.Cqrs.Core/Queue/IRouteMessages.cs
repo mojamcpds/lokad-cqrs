@@ -7,8 +7,8 @@
 
 namespace Lokad.Cqrs.Queue
 {
-	public interface IRouteMessages
-	{
-		void RouteMessages(UnpackedMessage[] message, params string[] references);
-	}
+    public interface IRouteMessages
+    {
+        void RouteMessages(UnpackedMessage[] message, params string[] references);
+    }
 }

@@ -10,15 +10,15 @@ using System.Diagnostics;
 
 namespace Lokad.Cqrs.Domain
 {
-	[DebuggerDisplay("{MessageType.Name}")]
-	public sealed class MessageInfo
-	{
-		public Type MessageType { get; internal set; }
-		public Type[] DirectConsumers { get; internal set; }
-		public Type[] DerivedConsumers { get; internal set; }
-		public Type[] AllConsumers { get; internal set; }
+    [DebuggerDisplay("{MessageType.Name}")]
+    public sealed class MessageInfo
+    {
+        public Type MessageType { get; internal set; }
+        public Type[] DirectConsumers { get; internal set; }
+        public Type[] DerivedConsumers { get; internal set; }
+        public Type[] AllConsumers { get; internal set; }
 
-		public bool IsDomainMessage { get; internal set; }
-		public bool IsSystemMessage { get; internal set; }
-	}
+        public bool IsDomainMessage { get; internal set; }
+        public bool IsSystemMessage { get; internal set; }
+    }
 }

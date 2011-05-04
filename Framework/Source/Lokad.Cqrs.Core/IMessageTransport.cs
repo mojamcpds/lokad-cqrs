@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Lokad.Cqrs
 {
-	public interface IMessageTransport : IDisposable
-	{
-		void Initialize();
-		Task[] Start(CancellationToken token);
+    public interface IMessageTransport : IDisposable
+    {
+        void Initialize();
+        Task[] Start(CancellationToken token);
 
-		event Func<UnpackedMessage, bool> MessageReceived;
-		event Action<UnpackedMessage, Exception> MessageHandlerFailed;
-	}
+        event Func<UnpackedMessage, bool> MessageReceived;
+        event Action<UnpackedMessage, Exception> MessageHandlerFailed;
+    }
 }

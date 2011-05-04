@@ -6,49 +6,48 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Lokad.Cqrs.Directory;
-using ExtendIEnumerable = Lokad.ExtendIEnumerable;
 
 namespace Lokad.Cqrs.Domain
 {
-	public sealed class MessageDirectory : IMessageDirectory
-	{
-		readonly string _consumeMethodName;
-		readonly ConsumerInfo[] _consumers;
-		readonly MessageInfo[] _messages;
+    public sealed class MessageDirectory : IMessageDirectory
+    {
+        readonly string _consumeMethodName;
+        readonly ConsumerInfo[] _consumers;
+        readonly MessageInfo[] _messages;
 
-		readonly Type[] _knownTypes;
+        readonly Type[] _knownTypes;
 
-		public MessageDirectory(string consumeMethodName, ConsumerInfo[] consumers, MessageInfo[] messages)
-		{
-			_consumeMethodName = consumeMethodName;
-			_consumers = consumers;
-			_messages = messages;
+        public MessageDirectory(string consumeMethodName, ConsumerInfo[] consumers, MessageInfo[] messages)
+        {
+            _consumeMethodName = consumeMethodName;
+            _consumers = consumers;
+            _messages = messages;
 
-			_knownTypes = ExtendIEnumerable.ToArray<MessageInfo, Type>(messages
-					.Where(m => false == m.MessageType.IsAbstract), m => m.MessageType);
-		}
+            _knownTypes = ExtendIEnumerable.ToArray<MessageInfo, Type>(messages
+                .Where(m => false == m.MessageType.IsAbstract), m => m.MessageType);
+        }
 
-		public ConsumerInfo[] Consumers
-		{
-			get { return _consumers; }
-		}
+        public ConsumerInfo[] Consumers
+        {
+            get { return _consumers; }
+        }
 
-		public MessageInfo[] Messages
-		{
-			get { return _messages; }
-		}
+        public MessageInfo[] Messages
+        {
+            get { return _messages; }
+        }
 
-		public void InvokeConsume(object consumer, object message)
-		{
-			MessageReflectionUtil.InvokeConsume(consumer, message, _consumeMethodName);
-		}
+        public void InvokeConsume(object consumer, object message)
+        {
+            MessageReflectionUtil.InvokeConsume(consumer, message, _consumeMethodName);
+        }
 
-		public IEnumerable<Type> GetKnownTypes()
-		{
-			return _knownTypes;
-		}
-	}
+        public IEnumerable<Type> GetKnownTypes()
+        {
+            return _knownTypes;
+        }
+    }
 }

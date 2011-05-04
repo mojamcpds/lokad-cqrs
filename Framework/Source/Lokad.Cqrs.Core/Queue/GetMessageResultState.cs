@@ -7,11 +7,11 @@
 
 namespace Lokad.Cqrs.Queue
 {
-	public enum GetMessageResultState
-	{
-		Success,
-		Wait,
-		Exception,
-		Retry
-	}
+    public enum GetMessageResultState
+    {
+        Success,
+        Wait,
+        Exception,
+        Retry
+    }
 }

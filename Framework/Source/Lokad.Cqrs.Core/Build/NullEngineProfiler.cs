@@ -6,23 +6,22 @@
 #endregion
 
 using System;
-using Lokad.Cqrs.Queue;
 
 namespace Lokad.Cqrs
 {
-	[UsedImplicitly]
-	public sealed class NullEngineProfiler : IEngineProfiler
-	{
-		public static readonly IEngineProfiler Instance = new NullEngineProfiler();
+    [UsedImplicitly]
+    public sealed class NullEngineProfiler : IEngineProfiler
+    {
+        public static readonly IEngineProfiler Instance = new NullEngineProfiler();
 
-		IDisposable IEngineProfiler.TrackMessage(UnpackedMessage message)
-		{
-			return null;
-		}
+        IDisposable IEngineProfiler.TrackMessage(UnpackedMessage message)
+        {
+            return null;
+        }
 
-		public IDisposable TrackContext(string context)
-		{
-			return null;
-		}
-	}
+        public IDisposable TrackContext(string context)
+        {
+            return null;
+        }
+    }
 }

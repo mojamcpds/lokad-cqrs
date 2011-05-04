@@ -5,12 +5,10 @@
 
 #endregion
 
-using Lokad.Cqrs.Queue;
-
 namespace Lokad.Cqrs.Consume
 {
-	public interface IMessageDispatcher
-	{
-		bool DispatchMessage(UnpackedMessage message);
-	}
+    public interface IMessageDispatcher
+    {
+        bool DispatchMessage(UnpackedMessage message);
+    }
 }

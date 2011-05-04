@@ -6,40 +6,39 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace Lokad.Cqrs
 {
-	public static class MessagePrinter
-	{
-		/// <summary>
-		/// Nicely prints the attributes to the text writer.
-		/// </summary>
-		/// <param name="attributes">The attributes.</param>
-		/// <param name="writer">The writer.</param>
-		/// <param name="indent">The indent.</param>
-		public static void PrintAttributes(MessageAttributesContract attributes, TextWriter writer, string indent = "")
-		{
-			var max = attributes.Items.Max(a => a.GetName().Length);
+    public static class MessagePrinter
+    {
+        /// <summary>
+        /// Nicely prints the attributes to the text writer.
+        /// </summary>
+        /// <param name="attributes">The attributes.</param>
+        /// <param name="writer">The writer.</param>
+        /// <param name="indent">The indent.</param>
+        public static void PrintAttributes(MessageAttributesContract attributes, TextWriter writer, string indent = "")
+        {
+            var max = attributes.Items.Max(a => a.GetName().Length);
 
-			foreach (var item in attributes.Items)
-			{
-				writer.Write(indent);
-				writer.WriteLine("{0,-" + (max + 2) + "} : {1}", item.GetName(), GetNiceValue(item));
-			}
-		}
+            foreach (var item in attributes.Items)
+            {
+                writer.Write(indent);
+                writer.WriteLine("{0,-" + (max + 2) + "} : {1}", item.GetName(), GetNiceValue(item));
+            }
+        }
 
-		static object GetNiceValue(MessageAttributeContract attrib)
-		{
-			switch (attrib.Type)
-			{
-				case MessageAttributeTypeContract.CreatedUtc:
-					return DateTime.FromBinary(attrib.NumberValue);
-				default:
-					return attrib.GetValue();
-			}
-		}
-	}
+        static object GetNiceValue(MessageAttributeContract attrib)
+        {
+            switch (attrib.Type)
+            {
+                case MessageAttributeTypeContract.CreatedUtc:
+                    return DateTime.FromBinary(attrib.NumberValue);
+                default:
+                    return attrib.GetValue();
+            }
+        }
+    }
 }
