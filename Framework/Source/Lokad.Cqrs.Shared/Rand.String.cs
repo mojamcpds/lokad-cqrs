@@ -6,6 +6,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,9 @@ namespace Lokad
                 Words = WordBase.SelectMany(w =>
                     {
                         var split = w.Split(' ');
-                        return Range.Repeat(split[1], int.Parse(split[0]));
+                        string item = split[1];
+                        int count = int.Parse(split[0]);
+                        return Enumerable.Repeat(item, count);
                     }).ToArray();
             }
 

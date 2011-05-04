@@ -57,7 +57,6 @@
     <Compile Include="Extensions\ExtendIEnumerable.cs" />
     <Compile Include="Extensions\ExtendInt32.cs" />
     <Compile Include="Extensions\ExtendStream.cs" />
-    <Compile Include="Extensions\Indexer.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="GuidUtil.cs" />
     <Compile Include="IKnowSerializationTypes.cs" />
@@ -69,7 +68,6 @@
     <Compile Include="Infrastructure\IMessageSerializer.cs" />
     <Compile Include="Infrastructure\ISupportSyntaxForSerialization.cs" />
     <Compile Include="IProvider.cs" />
-    <Compile Include="KeyInvalidException.cs" />
     <Compile Include="Logging\DebugLog.cs" />
     <Compile Include="Logging\ExtendILogProvider.cs" />
     <Compile Include="Logging\ExtendISupportSyntaxForLogging.cs" />
@@ -100,8 +98,6 @@
     <Compile Include="Rand.String.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Reflection\Express.cs" />
-    <Compile Include="Reflection\ILHelper.cs" />
-    <Compile Include="Reflection\ReflectLambdaException.cs" />
     <Compile Include="ResolutionException.cs" />
     <Compile Include="ISettingsProvider.cs" />
     <Compile Include="Storage\IEntityReader.cs" />
@@ -112,10 +108,8 @@
     <Compile Include="Syntax\Syntax.TTarget.cs" />
     <Compile Include="SystemUtil.cs" />
     <Compile Include="Utils\ArrayUtil.cs" />
-    <Compile Include="Utils\BufferUtil.cs" />
     <Compile Include="Utils\EnumComparer.cs" />
     <Compile Include="Utils\EnumUtil.TEnum.cs" />
-    <Compile Include="Utils\StringUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
@@ -125,9 +119,7 @@
   <ItemGroup>
     <Content Include="_ReadMe.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Monads\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
