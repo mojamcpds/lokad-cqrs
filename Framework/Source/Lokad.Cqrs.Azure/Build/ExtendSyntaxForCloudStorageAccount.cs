@@ -5,14 +5,9 @@
 
 #endregion
 
-using System.Net;
-using Autofac;
-using Microsoft.WindowsAzure;
-
 namespace Lokad.Cqrs
 {
-	public static class ExtendSyntaxForCloudStorageAccount
-	{
-		
-	}
+    public static class ExtendSyntaxForCloudStorageAccount
+    {
+    }
 }

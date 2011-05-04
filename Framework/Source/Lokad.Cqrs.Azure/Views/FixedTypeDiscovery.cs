@@ -7,22 +7,21 @@
 
 using System;
 using System.Collections.Generic;
-using Lokad.Serialization;
 
 namespace Lokad.Cqrs.Views
 {
-	public sealed class FixedTypeDiscovery : IKnowSerializationTypes
-	{
-		readonly Type[] _types;
+    public sealed class FixedTypeDiscovery : IKnowSerializationTypes
+    {
+        readonly Type[] _types;
 
-		public FixedTypeDiscovery(Type[] types)
-		{
-			_types = types;
-		}
+        public FixedTypeDiscovery(Type[] types)
+        {
+            _types = types;
+        }
 
-		public IEnumerable<Type> GetKnownTypes()
-		{
-			return _types;
-		}
-	}
+        public IEnumerable<Type> GetKnownTypes()
+        {
+            return _types;
+        }
+    }
 }

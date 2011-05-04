@@ -11,63 +11,61 @@ using System.Linq;
 using Autofac;
 using Lokad.Cqrs.Directory;
 using Lokad.Cqrs.Domain;
-using Lokad.Cqrs.Queue;
-using ExtendIEnumerable = Lokad.ExtendIEnumerable;
 
 namespace Lokad.Cqrs.Consume
 {
-	public sealed class DispatchesSingleMessage : IMessageDispatcher
-	{
-		readonly ILifetimeScope _container;
-		readonly IDictionary<Type, Type> _messageConsumers = new Dictionary<Type, Type>();
-		readonly IMessageDirectory _messageDirectory;
+    public sealed class DispatchesSingleMessage : IMessageDispatcher
+    {
+        readonly ILifetimeScope _container;
+        readonly IDictionary<Type, Type> _messageConsumers = new Dictionary<Type, Type>();
+        readonly IMessageDirectory _messageDirectory;
 
 
-		public DispatchesSingleMessage(ILifetimeScope container, IMessageDirectory messageDirectory)
-		{
-			_container = container;
-			_messageDirectory = messageDirectory;
-		}
+        public DispatchesSingleMessage(ILifetimeScope container, IMessageDirectory messageDirectory)
+        {
+            _container = container;
+            _messageDirectory = messageDirectory;
+        }
 
-		static void ThrowIfCommandHasMultipleConsumers(IEnumerable<MessageInfo> commands)
-		{
-			var multipleConsumers = commands
-				.Where(c => c.AllConsumers.Length > 1).ToArray(c => c.MessageType.FullName);
+        static void ThrowIfCommandHasMultipleConsumers(IEnumerable<MessageInfo> commands)
+        {
+            var multipleConsumers = commands
+                .Where(c => c.AllConsumers.Length > 1).ToArray(c => c.MessageType.FullName);
 
-			if (multipleConsumers.Any())
-			{
-				throw new InvalidOperationException(
-					"These messages have multiple consumers. Did you intend to declare them as events? " +
-						multipleConsumers.Join(Environment.NewLine));
-			}
-		}
+            if (multipleConsumers.Any())
+            {
+                throw new InvalidOperationException(
+                    "These messages have multiple consumers. Did you intend to declare them as events? " +
+                        multipleConsumers.Join(Environment.NewLine));
+            }
+        }
 
-		public void Init()
-		{
-			ThrowIfCommandHasMultipleConsumers(_messageDirectory.Messages);
-			foreach (var messageInfo in _messageDirectory.Messages)
-			{
-				if (messageInfo.AllConsumers.Length > 0)
-				{
-					_messageConsumers[messageInfo.MessageType] = messageInfo.AllConsumers[0];
-				}
-			}
-		}
+        public void Init()
+        {
+            ThrowIfCommandHasMultipleConsumers(_messageDirectory.Messages);
+            foreach (var messageInfo in _messageDirectory.Messages)
+            {
+                if (messageInfo.AllConsumers.Length > 0)
+                {
+                    _messageConsumers[messageInfo.MessageType] = messageInfo.AllConsumers[0];
+                }
+            }
+        }
 
-		public bool DispatchMessage(UnpackedMessage message)
-		{
-			Type consumerType;
-			if (_messageConsumers.TryGetValue(message.ContractType, out consumerType))
-			{
-				using (var scope = _container.BeginLifetimeScope())
-				{
-					var consumer = scope.Resolve(consumerType);
-					_messageDirectory.InvokeConsume(consumer, message.Content);
-				}
+        public bool DispatchMessage(UnpackedMessage message)
+        {
+            Type consumerType;
+            if (_messageConsumers.TryGetValue(message.ContractType, out consumerType))
+            {
+                using (var scope = _container.BeginLifetimeScope())
+                {
+                    var consumer = scope.Resolve(consumerType);
+                    _messageDirectory.InvokeConsume(consumer, message.Content);
+                }
 
-				return true;
-			}
-			return false;
-		}
-	}
+                return true;
+            }
+            return false;
+        }
+    }
 }

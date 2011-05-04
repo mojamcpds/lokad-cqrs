@@ -12,52 +12,53 @@ using Autofac;
 
 namespace Lokad.Cqrs
 {
-	[UsedImplicitly]
-	public class CloudClient : ICloudClient
-	{
-		readonly Lazy<IMessageClient> _client;
-		readonly IComponentContext _resolver;
+    [UsedImplicitly]
+    public class CloudClient : ICloudClient
+    {
+        readonly Lazy<IMessageClient> _client;
+        readonly IComponentContext _resolver;
 
-		public CloudClient(IComponentContext resolver)
-		{
-			_resolver = resolver;
-			_client = new Lazy<IMessageClient>(GetClient, LazyThreadSafetyMode.ExecutionAndPublication);
-		}
+        public CloudClient(IComponentContext resolver)
+        {
+            _resolver = resolver;
+            _client = new Lazy<IMessageClient>(GetClient, LazyThreadSafetyMode.ExecutionAndPublication);
+        }
 
-		public CloudClient(IComponentContext resolver, Lazy<IMessageClient> client)
-		{
-			_resolver = resolver;
-			_client = client;
-		}
+        public CloudClient(IComponentContext resolver, Lazy<IMessageClient> client)
+        {
+            _resolver = resolver;
+            _client = client;
+        }
 
-		public void SendMessage(object message)
-		{
-			_client.Value.Send(message);
-		}
+        public void SendMessage(object message)
+        {
+            _client.Value.Send(message);
+        }
 
-		public TService Resolve<TService>()
-		{
-			try
-			{
-				return _resolver.Resolve<TService>();
-			}
-			catch (TargetInvocationException e)
-			{
-				throw Errors.Inner(e);
-			}
-		}
+        public TService Resolve<TService>()
+        {
+            try
+            {
+                return _resolver.Resolve<TService>();
+            }
+            catch (TargetInvocationException e)
+            {
+                throw Errors.Inner(e);
+            }
+        }
 
-		IMessageClient GetClient()
-		{
-			try
-			{
-				return _resolver.Resolve<IMessageClient>();
-			}
-			catch (Exception e)
-			{
-				throw new InvalidOperationException(
-					"Failed to resolve message client. Have you used Builder.AddMessageClient or Builder.BuildFor(name)?", e);
-			}
-		}
-	}
+        IMessageClient GetClient()
+        {
+            try
+            {
+                return _resolver.Resolve<IMessageClient>();
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(
+                    "Failed to resolve message client. Have you used Builder.AddMessageClient or Builder.BuildFor(name)?",
+                    e);
+            }
+        }
+    }
 }

@@ -13,45 +13,56 @@ using Lokad.Cqrs.Transport;
 
 namespace Lokad.Cqrs
 {
-	/// <summary>
-	/// Configures management environment for the Lokad.CQRS
-	/// </summary>
-	[UsedImplicitly]
-	public sealed class CloudManagerBuilder : Syntax, ISyntax<ContainerBuilder>
-	{
-		readonly ContainerBuilder _builder = new ContainerBuilder();
+    /// <summary>
+    /// Configures management environment for the Lokad.CQRS
+    /// </summary>
+    [UsedImplicitly]
+    public sealed class CloudManagerBuilder : Syntax, ISyntax<ContainerBuilder>
+    {
+        readonly ContainerBuilder _builder = new ContainerBuilder();
 
-		public AutofacBuilderForLogging Logging { get { return new AutofacBuilderForLogging(_builder);}}
-		public AutofacBuilderForAzure Azure { get { return new AutofacBuilderForAzure(_builder);} }
-		public AutofacBuilderForSerialization Serialization { get { return new AutofacBuilderForSerialization(_builder);}}
+        public AutofacBuilderForLogging Logging
+        {
+            get { return new AutofacBuilderForLogging(_builder); }
+        }
+
+        public AutofacBuilderForAzure Azure
+        {
+            get { return new AutofacBuilderForAzure(_builder); }
+        }
+
+        public AutofacBuilderForSerialization Serialization
+        {
+            get { return new AutofacBuilderForSerialization(_builder); }
+        }
 
 
-		public CloudManagerBuilder()
-		{
-			Logging.LogToTrace();
+        public CloudManagerBuilder()
+        {
+            Logging.LogToTrace();
 
-			
-			_builder.RegisterInstance(NullEngineProfiler.Instance);
-			_builder.RegisterType<AzureQueueFactory>().As<IRouteMessages, IQueueManager>().SingleInstance();
-			_builder.RegisterType<AzureQueueTransport>().As<IMessageTransport>();
-		}
 
-		public CloudManagerBuilder DomainIs(Action<DomainBuildModule> configuration)
-		{
-			var m = new DomainBuildModule();
-			configuration(m);
-			_builder.RegisterModule(m);
-			return this;
-		}
+            _builder.RegisterInstance(NullEngineProfiler.Instance);
+            _builder.RegisterType<AzureQueueFactory>().As<IRouteMessages, IQueueManager>().SingleInstance();
+            _builder.RegisterType<AzureQueueTransport>().As<IMessageTransport>();
+        }
 
-		public IContainer Build()
-		{
-			return _builder.Build();
-		}
+        public CloudManagerBuilder DomainIs(Action<DomainBuildModule> configuration)
+        {
+            var m = new DomainBuildModule();
+            configuration(m);
+            _builder.RegisterModule(m);
+            return this;
+        }
 
-		public ContainerBuilder Target
-		{
-			get { return _builder; }
-		}
-	}
+        public IContainer Build()
+        {
+            return _builder.Build();
+        }
+
+        public ContainerBuilder Target
+        {
+            get { return _builder; }
+        }
+    }
 }

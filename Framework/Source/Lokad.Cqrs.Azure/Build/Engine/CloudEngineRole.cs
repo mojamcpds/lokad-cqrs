@@ -12,54 +12,54 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 
 namespace Lokad.Cqrs
 {
-	public abstract class CloudEngineRole : RoleEntryPoint
-	{
-		/// <summary>
-		/// Implement in the inheriting class to configure the bus host.
-		/// </summary>
-		/// <returns></returns>
-		protected abstract ICloudEngineHost BuildHost();
+    public abstract class CloudEngineRole : RoleEntryPoint
+    {
+        /// <summary>
+        /// Implement in the inheriting class to configure the bus host.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract ICloudEngineHost BuildHost();
 
-		protected event Action<ICloudEngineHost> WhenEngineStarts = host => { };
+        protected event Action<ICloudEngineHost> WhenEngineStarts = host => { };
 
-		ICloudEngineHost _host;
-		readonly CancellationTokenSource _source = new CancellationTokenSource();
+        ICloudEngineHost _host;
+        readonly CancellationTokenSource _source = new CancellationTokenSource();
 
-		Task _task;
+        Task _task;
 
-		public override bool OnStart()
-		{
-			// this is actually azure initialization;
-			_host = BuildHost();
-			_host.Initialize();
-			return base.OnStart();
-		}
+        public override bool OnStart()
+        {
+            // this is actually azure initialization;
+            _host = BuildHost();
+            _host.Initialize();
+            return base.OnStart();
+        }
 
-		public override void Run()
-		{
-			_task = _host.Start(_source.Token);
-			WhenEngineStarts(_host);
-			_source.Token.WaitHandle.WaitOne();
-		}
+        public override void Run()
+        {
+            _task = _host.Start(_source.Token);
+            WhenEngineStarts(_host);
+            _source.Token.WaitHandle.WaitOne();
+        }
 
-		public string InstanceName
-		{
-			get
-			{
-				return string.Format("{0}/{1}",
-					RoleEnvironment.CurrentRoleInstance.Role.Name,
-					RoleEnvironment.CurrentRoleInstance.Id);
-			}
-		}
+        public string InstanceName
+        {
+            get
+            {
+                return string.Format("{0}/{1}",
+                    RoleEnvironment.CurrentRoleInstance.Role.Name,
+                    RoleEnvironment.CurrentRoleInstance.Id);
+            }
+        }
 
-		public override void OnStop()
-		{
-			_source.Cancel(true);
+        public override void OnStop()
+        {
+            _source.Cancel(true);
 
-			_task.Wait(10.Seconds());
-			_host.Dispose();
+            _task.Wait(10.Seconds());
+            _host.Dispose();
 
-			base.OnStop();
-		}
-	}
+            base.OnStop();
+        }
+    }
 }
