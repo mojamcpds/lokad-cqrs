@@ -13,9 +13,10 @@ namespace Lokad.Cqrs.Queue
     {
         public static Exception NoContractNameOnSend(Type messageType, IMessageSerializer serializer)
         {
-            return Errors.InvalidOperation(
+            var txt = string.Format(
                 "Can't find contract name to serialize message: '{0}'. Make sure that your message types are loaded by domain and are compatible with '{1}'.",
                 messageType, serializer.GetType().Name);
+            return new InvalidOperationException(txt);
         }
     }
 }
