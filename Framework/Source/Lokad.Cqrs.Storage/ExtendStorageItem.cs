@@ -10,45 +10,45 @@ using System.Text;
 
 namespace Lokad.Cqrs
 {
-	/// <summary>
-	/// Helper extensions for the <see cref="IStorageItem"/>
-	/// </summary>
-	public static class ExtendStorageItem
-	{
-		public static void WriteText(this IStorageItem item, string text)
-		{
-			item.Write(s =>
-				{
-					using (var writer = new StreamWriter(s))
-					{
-						writer.Write(text);
-					}
-				});
-		}
+    /// <summary>
+    /// Helper extensions for the <see cref="IStorageItem"/>
+    /// </summary>
+    public static class ExtendStorageItem
+    {
+        public static void WriteText(this IStorageItem item, string text)
+        {
+            item.Write(s =>
+                {
+                    using (var writer = new StreamWriter(s))
+                    {
+                        writer.Write(text);
+                    }
+                });
+        }
 
-		public static void WriteText(this IStorageItem item, string text, Encoding encoding)
-		{
-			item.Write(s =>
-				{
-					using (var writer = new StreamWriter(s, encoding))
-					{
-						writer.Write(text);
-					}
-				});
-		}
+        public static void WriteText(this IStorageItem item, string text, Encoding encoding)
+        {
+            item.Write(s =>
+                {
+                    using (var writer = new StreamWriter(s, encoding))
+                    {
+                        writer.Write(text);
+                    }
+                });
+        }
 
-		public static string ReadText(this IStorageItem item)
-		{
-			string result = null;
-			item.ReadInto((props, stream) =>
-				{
-					using (var reader = new StreamReader(stream))
-					{
-						result = reader.ReadToEnd();
-					}
-				});
+        public static string ReadText(this IStorageItem item)
+        {
+            string result = null;
+            item.ReadInto((props, stream) =>
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        result = reader.ReadToEnd();
+                    }
+                });
 
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 }
