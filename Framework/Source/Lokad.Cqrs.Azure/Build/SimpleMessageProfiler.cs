@@ -5,22 +5,20 @@
 
 #endregion
 
-using System;
-using Lokad.Cqrs.Queue;
 using Microsoft.WindowsAzure.StorageClient;
 
 namespace Lokad.Cqrs
 {
-	sealed class SimpleMessageProfiler : IMessageProfiler
-	{
-		public static readonly IMessageProfiler Instance = new SimpleMessageProfiler();
+    sealed class SimpleMessageProfiler : IMessageProfiler
+    {
+        public static readonly IMessageProfiler Instance = new SimpleMessageProfiler();
 
-		public string GetReadableMessageInfo(UnpackedMessage message)
-		{
-			var contract = message.ContractType.Name;
-			return message
-				.GetState<CloudQueueMessage>()
-				.Convert(s => contract + " - " + s.Id, contract);
-		}
-	}
+        public string GetReadableMessageInfo(UnpackedMessage message)
+        {
+            var contract = message.ContractType.Name;
+            return message
+                .GetState<CloudQueueMessage>()
+                .Convert(s => contract + " - " + s.Id, contract);
+        }
+    }
 }

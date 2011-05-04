@@ -11,23 +11,23 @@ using Lokad.Cqrs.Queue;
 
 namespace Lokad.Cqrs.Sender
 {
-	public sealed class SenderModule : Module
-	{
-		Action<ContainerBuilder> _builders = builder => { };
+    public sealed class SenderModule : Module
+    {
+        Action<ContainerBuilder> _builders = builder => { };
 
-		public SenderModule DefaultToQueue(string queueName)
-		{
-			_builders += builder => builder.Register(c =>
-				{
-					var queue = c.Resolve<IQueueManager>().GetWriteQueue(queueName);
-					return new DefaultMessageClient(queue);
-				}).SingleInstance().As<IMessageClient>();
-			return this;
-		}
+        public SenderModule DefaultToQueue(string queueName)
+        {
+            _builders += builder => builder.Register(c =>
+                {
+                    var queue = c.Resolve<IQueueManager>().GetWriteQueue(queueName);
+                    return new DefaultMessageClient(queue);
+                }).SingleInstance().As<IMessageClient>();
+            return this;
+        }
 
-		protected override void Load(ContainerBuilder builder)
-		{
-			_builders(builder);
-		}
-	}
+        protected override void Load(ContainerBuilder builder)
+        {
+            _builders(builder);
+        }
+    }
 }

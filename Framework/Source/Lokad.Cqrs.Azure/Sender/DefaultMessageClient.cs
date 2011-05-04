@@ -9,21 +9,21 @@ using Lokad.Cqrs.Queue;
 
 namespace Lokad.Cqrs.Sender
 {
-	sealed class DefaultMessageClient : IMessageClient
-	{
-		readonly IWriteMessageQueue _queue;
+    sealed class DefaultMessageClient : IMessageClient
+    {
+        readonly IWriteMessageQueue _queue;
 
-		public DefaultMessageClient(IWriteMessageQueue queue)
-		{
-			_queue = queue;
-		}
+        public DefaultMessageClient(IWriteMessageQueue queue)
+        {
+            _queue = queue;
+        }
 
-		public void Send(params object[] messages)
-		{
-			if (messages.Length == 0)
-				return;
+        public void Send(params object[] messages)
+        {
+            if (messages.Length == 0)
+                return;
 
-			_queue.SendMessages(messages, nv => { });
-		}
-	}
+            _queue.SendMessages(messages, nv => { });
+        }
+    }
 }

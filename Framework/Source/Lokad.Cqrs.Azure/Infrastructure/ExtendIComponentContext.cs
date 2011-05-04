@@ -10,13 +10,13 @@ using Autofac;
 
 namespace Lokad.Cqrs
 {
-	public static class ExtendIComponentContext
-	{
-		public static void WhenDisposed(this IComponentContext context, Action disposal)
-		{
-			var builder = new ContainerBuilder();
-			builder.RegisterInstance(new DisposableAction(disposal));
-			builder.Update(context.ComponentRegistry);
-		}
-	}
+    public static class ExtendIComponentContext
+    {
+        public static void WhenDisposed(this IComponentContext context, Action disposal)
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new DisposableAction(disposal));
+            builder.Update(context.ComponentRegistry);
+        }
+    }
 }

@@ -8,64 +8,63 @@
 using System;
 using System.Collections.Generic;
 using Lokad.Cqrs.Directory;
-using Lokad.Cqrs.Queue;
 using Microsoft.WindowsAzure.StorageClient;
 
 namespace Lokad.Cqrs.Domain
 {
-	[UsedImplicitly]
-	public sealed class DomainAwareMessageProfiler : IMessageProfiler
-	{
-		readonly IDictionary<Type, GetInfoDelegate> _delegates;
+    [UsedImplicitly]
+    public sealed class DomainAwareMessageProfiler : IMessageProfiler
+    {
+        readonly IDictionary<Type, GetInfoDelegate> _delegates;
 
-		public DomainAwareMessageProfiler(IMessageDirectory directory)
-		{
-			_delegates = BuildFrom(directory);
-		}
+        public DomainAwareMessageProfiler(IMessageDirectory directory)
+        {
+            _delegates = BuildFrom(directory);
+        }
 
 
-		public string GetReadableMessageInfo(UnpackedMessage message)
-		{
-			GetInfoDelegate value;
-			
-			if (_delegates.TryGetValue(message.ContractType, out value))
-			{
-				return value(message);
-			}
-			return GetDefaultInfo(message);
-		}
+        public string GetReadableMessageInfo(UnpackedMessage message)
+        {
+            GetInfoDelegate value;
 
-		static string GetDefaultInfo(UnpackedMessage message)
-		{
-			var contract = message.ContractType.Name;
-			return message
-				.GetState<CloudQueueMessage>()
-				.Convert(s => contract + " - " + s.Id, contract);
-		}
+            if (_delegates.TryGetValue(message.ContractType, out value))
+            {
+                return value(message);
+            }
+            return GetDefaultInfo(message);
+        }
 
-		static IDictionary<Type, GetInfoDelegate> BuildFrom(IMessageDirectory directory)
-		{
-			var delegates = new Dictionary<Type, GetInfoDelegate>();
-			foreach (var message in directory.Messages)
-			{
-				if (message.MessageType.IsInterface)
-					continue;
+        static string GetDefaultInfo(UnpackedMessage message)
+        {
+            var contract = message.ContractType.Name;
+            return message
+                .GetState<CloudQueueMessage>()
+                .Convert(s => contract + " - " + s.Id, contract);
+        }
 
-				var type = message.MessageType;
-				var hasStringOverride = type.GetMethod("ToString").DeclaringType != typeof (object);
+        static IDictionary<Type, GetInfoDelegate> BuildFrom(IMessageDirectory directory)
+        {
+            var delegates = new Dictionary<Type, GetInfoDelegate>();
+            foreach (var message in directory.Messages)
+            {
+                if (message.MessageType.IsInterface)
+                    continue;
 
-				if (hasStringOverride)
-				{
-					delegates.Add(type, m => m.Content.ToString());
-				}
-				else
-				{
-					delegates.Add(type, GetDefaultInfo);
-				}
-			}
-			return delegates;
-		}
+                var type = message.MessageType;
+                var hasStringOverride = type.GetMethod("ToString").DeclaringType != typeof (object);
 
-		delegate string GetInfoDelegate(UnpackedMessage message);
-	}
+                if (hasStringOverride)
+                {
+                    delegates.Add(type, m => m.Content.ToString());
+                }
+                else
+                {
+                    delegates.Add(type, GetDefaultInfo);
+                }
+            }
+            return delegates;
+        }
+
+        delegate string GetInfoDelegate(UnpackedMessage message);
+    }
 }

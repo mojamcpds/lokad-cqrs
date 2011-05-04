@@ -13,57 +13,57 @@ using Autofac;
 
 namespace Lokad.Cqrs
 {
-	[UsedImplicitly]
-	public sealed class CloudEngineHost : ICloudEngineHost
-	{
-		readonly IContainer _container;
-		readonly ILog _log;
-		readonly IEnumerable<IEngineProcess> _serverProcesses;
+    [UsedImplicitly]
+    public sealed class CloudEngineHost : ICloudEngineHost
+    {
+        readonly IContainer _container;
+        readonly ILog _log;
+        readonly IEnumerable<IEngineProcess> _serverProcesses;
 
-		public CloudEngineHost(
-			IContainer container,
-			ILogProvider provider,
-			IEnumerable<IEngineProcess> serverProcesses)
-		{
-			_container = container;
-			_serverProcesses = serverProcesses;
-			_log = provider.LogForName(this);
-		}
+        public CloudEngineHost(
+            IContainer container,
+            ILogProvider provider,
+            IEnumerable<IEngineProcess> serverProcesses)
+        {
+            _container = container;
+            _serverProcesses = serverProcesses;
+            _log = provider.LogForName(this);
+        }
 
-		public Task Start(CancellationToken token)
-		{
-			_log.Info("Starting host");
+        public Task Start(CancellationToken token)
+        {
+            _log.Info("Starting host");
 
-			var tasks = _serverProcesses.ToArray(p => p.Start(token));
+            var tasks = _serverProcesses.ToArray(p => p.Start(token));
 
-			return Task.Factory.ContinueWhenAll(tasks, t => _log.Info("Stopped host"));
-		}
+            return Task.Factory.ContinueWhenAll(tasks, t => _log.Info("Stopped host"));
+        }
 
-		public void Initialize()
-		{
-			_log.Info("Initializing host");
+        public void Initialize()
+        {
+            _log.Info("Initializing host");
 
-			foreach (var process in _serverProcesses)
-			{
-				process.Initialize();
-			}
-		}
+            foreach (var process in _serverProcesses)
+            {
+                process.Initialize();
+            }
+        }
 
-		public TService Resolve<TService>()
-		{
-			try
-			{
-				return _container.Resolve<TService>();
-			}
-			catch (TargetInvocationException e)
-			{
-				throw Errors.Inner(e);
-			}
-		}
+        public TService Resolve<TService>()
+        {
+            try
+            {
+                return _container.Resolve<TService>();
+            }
+            catch (TargetInvocationException e)
+            {
+                throw Errors.Inner(e);
+            }
+        }
 
-		public void Dispose()
-		{
-			_container.Dispose();
-		}
-	}
+        public void Dispose()
+        {
+            _container.Dispose();
+        }
+    }
 }
