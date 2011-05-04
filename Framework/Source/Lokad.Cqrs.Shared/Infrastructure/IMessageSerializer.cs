@@ -1,17 +1,16 @@
-﻿#region Copyright (c) 2009-2010 LOKAD SAS. All rights reserved.
+﻿#region (c) 2010 Lokad Open Source - New BSD License 
 
-// Copyright (c) 2009-2010 LOKAD SAS. All rights reserved.
-// You must not remove this notice, or any other, from this software.
-// This document is the property of LOKAD SAS and must not be disclosed.
+// Copyright (c) Lokad 2010, http://www.lokad.com
+// This code is released as Open Source under the terms of the New BSD Licence
 
 #endregion
 
 namespace Lokad
 {
-	/// <summary>
-	/// Joins data serializer and contract mapper
-	/// </summary>
-	public interface IMessageSerializer : IDataSerializer, IDataContractMapper
-	{
-	}
+    /// <summary>
+    /// Joins data serializer and contract mapper
+    /// </summary>
+    public interface IMessageSerializer : IDataSerializer, IDataContractMapper
+    {
+    }
 }

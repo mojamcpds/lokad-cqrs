@@ -5,18 +5,17 @@
 
 #endregion
 
-
 namespace Lokad
 {
-	/// <summary>
-	/// Generic message publishing interface that is provided by the infrastructure, should user configure it for publishing
-	/// </summary>
-	public interface IMessageClient
-	{
-		/// <summary>
-		/// Sends the specified messages to the designated recipient.
-		/// </summary>
-		/// <param name="messages">The messages to send.</param>
-		void Send(params object[] messages);
-	}
+    /// <summary>
+    /// Generic message publishing interface that is provided by the infrastructure, should user configure it for publishing
+    /// </summary>
+    public interface IMessageClient
+    {
+        /// <summary>
+        /// Sends the specified messages to the designated recipient.
+        /// </summary>
+        /// <param name="messages">The messages to send.</param>
+        void Send(params object[] messages);
+    }
 }
