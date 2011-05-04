@@ -7,19 +7,19 @@
 
 namespace Lokad.Cqrs
 {
-	/// <summary>
-	/// Extensions for the <see cref="IStorageRoot"/>
-	/// </summary>
-	public static class ExtendIStorageRoot
-	{
-		/// <summary>
-		/// Deletes the child container.
-		/// </summary>
-		/// <param name="root">The root.</param>
-		/// <param name="name">The name.</param>
-		public static void DeleteChildContainer(this IStorageRoot root, string name)
-		{
-			root.GetContainer(name).Delete();
-		}
-	}
+    /// <summary>
+    /// Extensions for the <see cref="IStorageRoot"/>
+    /// </summary>
+    public static class ExtendIStorageRoot
+    {
+        /// <summary>
+        /// Deletes the child container.
+        /// </summary>
+        /// <param name="root">The root.</param>
+        /// <param name="name">The name.</param>
+        public static void DeleteChildContainer(this IStorageRoot root, string name)
+        {
+            root.GetContainer(name).Delete();
+        }
+    }
 }

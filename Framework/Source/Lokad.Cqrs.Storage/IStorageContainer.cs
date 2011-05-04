@@ -7,46 +7,46 @@
 
 namespace Lokad.Cqrs
 {
-	/// <summary>
-	/// Represents storage container regefence
-	/// </summary>
-	public interface IStorageContainer
-	{
-		/// <summary>
-		/// Gets the full path.
-		/// </summary>
-		/// <value>The full path.</value>
-		string FullPath { get; }
+    /// <summary>
+    /// Represents storage container regefence
+    /// </summary>
+    public interface IStorageContainer
+    {
+        /// <summary>
+        /// Gets the full path.
+        /// </summary>
+        /// <value>The full path.</value>
+        string FullPath { get; }
 
-		/// <summary>
-		/// Gets the child container nested within the current container reference.
-		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <returns></returns>
-		IStorageContainer GetContainer(string name);
+        /// <summary>
+        /// Gets the child container nested within the current container reference.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        IStorageContainer GetContainer(string name);
 
-		/// <summary>
-		/// Gets the storage item reference within the current container.
-		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <returns></returns>
-		IStorageItem GetItem(string name);
+        /// <summary>
+        /// Gets the storage item reference within the current container.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        IStorageItem GetItem(string name);
 
-		/// <summary>
-		/// Ensures that the current reference represents valid container
-		/// </summary>
-		/// <returns></returns>
-		IStorageContainer Create();
+        /// <summary>
+        /// Ensures that the current reference represents valid container
+        /// </summary>
+        /// <returns></returns>
+        IStorageContainer Create();
 
-		/// <summary>
-		/// Deletes this container
-		/// </summary>
-		void Delete();
+        /// <summary>
+        /// Deletes this container
+        /// </summary>
+        void Delete();
 
-		/// <summary>
-		/// Checks if the underlying container exists
-		/// </summary>
-		/// <returns></returns>
-		bool Exists();
-	}
+        /// <summary>
+        /// Checks if the underlying container exists
+        /// </summary>
+        /// <returns></returns>
+        bool Exists();
+    }
 }

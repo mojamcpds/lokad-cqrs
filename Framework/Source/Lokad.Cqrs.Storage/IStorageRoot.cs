@@ -7,16 +7,16 @@
 
 namespace Lokad.Cqrs
 {
-	/// <summary>
-	/// Storage root (Azure Blob account or file drive)
-	/// </summary>
-	public interface IStorageRoot
-	{
-		/// <summary>
-		/// Gets the container reference, identified by it's name
-		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <returns>new container referece</returns>
-		IStorageContainer GetContainer(string name);
-	}
+    /// <summary>
+    /// Storage root (Azure Blob account or file drive)
+    /// </summary>
+    public interface IStorageRoot
+    {
+        /// <summary>
+        /// Gets the container reference, identified by it's name
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>new container referece</returns>
+        IStorageContainer GetContainer(string name);
+    }
 }
