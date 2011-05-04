@@ -32,19 +32,11 @@ namespace Lokad
         internal static readonly IDictionary<string, TEnum> CaseDict;
         internal static readonly IDictionary<string, TEnum> IgnoreCaseDict;
 
-        internal static readonly string EnumPrefix = typeof (TEnum).Name + "_";
-
-        /// <summary>
-        /// Efficient comparer for the enum
-        /// </summary>
-        public static readonly IEqualityComparer<TEnum> Comparer;
-
         static EnumUtil()
         {
             Values = GetValues();
             var def = default(TEnum);
             ValuesWithoutDefault = Values.Where(x => !def.Equals(x)).ToArray();
-            Comparer = EnumComparer<TEnum>.Instance;
 
             IgnoreCaseDict = new Dictionary<string, TEnum>(StringComparer.InvariantCultureIgnoreCase);
             CaseDict = new Dictionary<string, TEnum>(StringComparer.InvariantCulture);
@@ -55,20 +47,6 @@ namespace Lokad
                 IgnoreCaseDict[item] = value;
                 CaseDict[item] = value;
             }
-        }
-
-        /// <summary>
-        /// Converts the specified enum safely from the target enum. Matching is done
-        /// via the efficient <see cref="Comparer"/> initialized with <see cref="MaybeParse.Enum{TEnum}(string)"/>
-        /// </summary>
-        /// <typeparam name="TSourceEnum">The type of the source enum.</typeparam>
-        /// <param name="enum">The @enum to convert from.</param>
-        /// <returns>converted enum</returns>
-        /// <exception cref="ArgumentException"> when conversion is not possible</exception>
-        public static TEnum ConvertSafelyFrom<TSourceEnum>(TSourceEnum @enum)
-            where TSourceEnum : struct, IComparable
-        {
-            return EnumUtil<TSourceEnum, TEnum>.Convert(@enum);
         }
 
         static TEnum[] GetValues()
