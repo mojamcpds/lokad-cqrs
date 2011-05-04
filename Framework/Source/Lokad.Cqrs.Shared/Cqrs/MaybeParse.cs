@@ -8,7 +8,7 @@
 using System;
 using System.Globalization;
 
-namespace Lokad
+namespace Lokad.Cqrs
 {
     /// <summary>
     /// 	Helper routines for converting strings into Maybe

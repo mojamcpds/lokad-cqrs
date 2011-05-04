@@ -7,6 +7,7 @@
 
 using System;
 using System.Linq;
+using Lokad.Cqrs;
 
 namespace Lokad.Serialization
 {

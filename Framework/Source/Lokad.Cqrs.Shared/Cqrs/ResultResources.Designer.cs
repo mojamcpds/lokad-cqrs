@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Lokad {
+namespace Lokad.Cqrs {
 	/// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

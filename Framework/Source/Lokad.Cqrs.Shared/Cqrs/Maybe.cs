@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Lokad
+namespace Lokad.Cqrs
 {
     /// <summary>
     /// Helper routines for <see cref="Maybe{T}"/>

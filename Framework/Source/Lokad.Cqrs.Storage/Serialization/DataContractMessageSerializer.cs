@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
+using Lokad.Cqrs;
 
 namespace Lokad.Serialization
 {
