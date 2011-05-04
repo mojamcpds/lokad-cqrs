@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Lokad
+namespace Lokad.Cqrs
 {
     /// <summary>
     /// Helper class that allows to pass out method call results without using exceptions

@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Lokad
+namespace Lokad.Cqrs
 {
     /// <summary>
     /// Improved version of the Result[T], that could serve as a basis for it.

@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using Lokad.Cqrs;
 
 namespace Lokad
 {

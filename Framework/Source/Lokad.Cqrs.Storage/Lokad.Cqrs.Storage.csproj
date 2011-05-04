@@ -84,9 +84,7 @@
       <Name>Lokad.Cqrs.Shared</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lmf\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
       <Link>SharedKey.snk</Link>
