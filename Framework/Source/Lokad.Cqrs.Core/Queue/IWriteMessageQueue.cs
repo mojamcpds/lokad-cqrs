@@ -6,14 +6,13 @@
 #endregion
 
 using System;
-using System.Collections.Specialized;
 
 namespace Lokad.Cqrs.Queue
 {
-	public interface IWriteMessageQueue
-	{
-		Uri Uri { get; }
-		void SendMessages(object[] messages, Action<MessageAttributeBuilder> headers);
-		void RouteMessages(UnpackedMessage[] messages, Action<MessageAttributeBuilder> headers);
-	}
+    public interface IWriteMessageQueue
+    {
+        Uri Uri { get; }
+        void SendMessages(object[] messages, Action<MessageAttributeBuilder> headers);
+        void RouteMessages(UnpackedMessage[] messages, Action<MessageAttributeBuilder> headers);
+    }
 }

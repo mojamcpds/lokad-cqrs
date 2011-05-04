@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Lokad.Cqrs
 {
-	public interface ICloudEngineHost : IDisposable
-	{
-		Task Start(CancellationToken token);
-		void Initialize();
-		TService Resolve<TService>();
-	}
+    public interface ICloudEngineHost : IDisposable
+    {
+        Task Start(CancellationToken token);
+        void Initialize();
+        TService Resolve<TService>();
+    }
 }

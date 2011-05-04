@@ -7,9 +7,9 @@
 
 namespace Lokad.Cqrs.Queue
 {
-	public interface IQueueManager
-	{
-		IReadMessageQueue GetReadQueue(string queueName);
-		IWriteMessageQueue GetWriteQueue(string queueName);
-	}
+    public interface IQueueManager
+    {
+        IReadMessageQueue GetReadQueue(string queueName);
+        IWriteMessageQueue GetWriteQueue(string queueName);
+    }
 }

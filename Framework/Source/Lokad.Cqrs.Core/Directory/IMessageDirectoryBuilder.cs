@@ -10,8 +10,8 @@ using Lokad.Cqrs.Directory;
 
 namespace Lokad.Cqrs.Domain
 {
-	public interface IMessageDirectoryBuilder
-	{
-		IMessageDirectory BuildDirectory(Func<MessageMapping, bool> filter);
-	}
+    public interface IMessageDirectoryBuilder
+    {
+        IMessageDirectory BuildDirectory(Func<MessageMapping, bool> filter);
+    }
 }

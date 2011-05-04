@@ -5,12 +5,10 @@
 
 #endregion
 
-using Lokad.Cqrs.Queue;
-
 namespace Lokad.Cqrs
 {
-	public interface IMessageProfiler
-	{
-		string GetReadableMessageInfo(UnpackedMessage message);
-	}
+    public interface IMessageProfiler
+    {
+        string GetReadableMessageInfo(UnpackedMessage message);
+    }
 }

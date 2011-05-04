@@ -9,10 +9,10 @@ using Lokad.Cqrs.Domain;
 
 namespace Lokad.Cqrs.Directory
 {
-	public interface IMessageDirectory : IKnowSerializationTypes
-	{
-		ConsumerInfo[] Consumers { get; }
-		MessageInfo[] Messages { get; }
-		void InvokeConsume(object consumer, object message);
-	}
+    public interface IMessageDirectory : IKnowSerializationTypes
+    {
+        ConsumerInfo[] Consumers { get; }
+        MessageInfo[] Messages { get; }
+        void InvokeConsume(object consumer, object message);
+    }
 }

@@ -7,9 +7,9 @@
 
 namespace Lokad.Cqrs
 {
-	public interface ICloudClient
-	{
-		void SendMessage(object message);
-		TService Resolve<TService>();
-	}
+    public interface ICloudClient
+    {
+        void SendMessage(object message);
+        TService Resolve<TService>();
+    }
 }
