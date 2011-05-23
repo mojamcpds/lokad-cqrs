@@ -54,7 +54,21 @@
     <Compile Include="Core.Outbox\QueueWriterRegistry.cs" />
     <Compile Include="Core.Reactive\ImmediateEventsObserver.cs" />
     <Compile Include="Core.Serialization\SerializationContractRegistry.cs" />
+    <Compile Include="Core\Action.cs" />
+    <Compile Include="Core\Container.Adapter.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Core\Container.Overloads.cs" />
+    <Compile Include="Core\Func.cs" />
     <Compile Include="Core\FunqContainer.cs" />
+    <Compile Include="Core\IFluentInterface.cs" />
+    <Compile Include="Core\IFunqlet.cs" />
+    <Compile Include="Core\Owner.cs" />
+    <Compile Include="Core\ResolutionException.cs" />
+    <Compile Include="Core\ReuseScope.cs" />
+    <Compile Include="Core\ServiceEntry.cs" />
+    <Compile Include="Core\ServiceEntry.Generic.cs" />
+    <Compile Include="Core\ServiceKey.cs" />
+    <Compile Include="Core\Syntax.cs" />
     <Compile Include="Evil\TransactionEvil.cs" />
     <Compile Include="Feature.AtomicStorage\AddOrUpdateHint.cs" />
     <Compile Include="Feature.AtomicStorage\AtomicStorageInitialized.cs" />
@@ -187,7 +201,12 @@
     <Compile Include="Core.Serialization\DataSerializerWithDataContracts.cs" />
     <Compile Include="Core.Serialization\DataContractUtil.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Core\Container.xdoc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\License.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
