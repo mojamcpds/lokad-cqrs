@@ -8,12 +8,12 @@ namespace Lokad.Cqrs.Feature.TapeStorage
     public interface ITapeStream
     {
         /// <summary>
-        /// Reads up to <see cref="maxCount"/> records with <see cref="offset"/>.
+        /// Reads up to <see cref="maxCount"/> records with <see cref="version"/>.
         /// </summary>
-        /// <param name="offset">The number of records to skip.</param>
+        /// <param name="version">The number of version to start from.</param>
         /// <param name="maxCount">The max number of records to load.</param>
         /// <returns>collection of blocks</returns>
-        IEnumerable<TapeRecord> ReadRecords(long offset, int maxCount);
+        IEnumerable<TapeRecord> ReadRecords(long version, int maxCount);
 
         /// <summary>
         /// Returns current storage version
@@ -30,12 +30,12 @@ namespace Lokad.Cqrs.Feature.TapeStorage
         /// <returns>whether the data was appended</returns>
         bool TryAppend(byte[] buffer, TapeAppendCondition appendCondition = default(TapeAppendCondition));
 
-        ///// <summary>
-        ///// Appends block in non-transactional manner (used for high throughput copying).
-        ///// It is the duty of the writer to verify that there are no concurrent changes
-        ///// and that IO failures are handled. 
-        ///// </summary>
-        ///// <param name="records">The records to copy.</param>
-        //void AppendNonAtomic(IEnumerable<TapeRecord> records);
+        /// <summary>
+        /// Appends block in non-transactional manner (used for high throughput copying).
+        /// It is the duty of the writer to verify that there are no concurrent changes
+        /// and that IO failures are handled. 
+        /// </summary>
+        /// <param name="records">The records to copy.</param>
+        void AppendNonAtomic(IEnumerable<TapeRecord> records);
     }
 }
