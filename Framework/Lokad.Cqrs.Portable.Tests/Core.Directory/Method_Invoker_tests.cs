@@ -6,8 +6,8 @@
 #endregion
 
 using System;
-using Lokad.Cqrs.Feature.Dispatch.Directory;
-using Lokad.Cqrs.Feature.Dispatch.Directory.Default;
+using Lokad.Cqrs.Feature.DirectoryDispatch;
+using Lokad.Cqrs.Feature.DirectoryDispatch.Default;
 using NUnit.Framework;
 
 // ReSharper disable InconsistentNaming
@@ -56,7 +56,7 @@ namespace Lokad.Cqrs.Core.Directory
         [Test]
         public void Default_definition_is_accepted()
         {
-            MethodInvokerHint.FromConsumerSample<IConsume<Feature.Dispatch.Directory.Default.IMessage>>(c => c.Consume(null));
+            MethodInvokerHint.FromConsumerSample<IConsume<Feature.DirectoryDispatch.Default.IMessage>>(c => c.Consume(null));
         }
     }
 }

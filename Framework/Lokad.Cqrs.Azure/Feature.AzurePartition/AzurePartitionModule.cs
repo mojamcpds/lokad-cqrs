@@ -15,15 +15,13 @@ using Lokad.Cqrs.Core.Outbox;
 using Lokad.Cqrs.Evil;
 using Lokad.Cqrs.Feature.AzurePartition.Inbox;
 using Lokad.Cqrs.Core;
-using Lokad.Cqrs.Feature.Dispatch.Directory;
+using Lokad.Cqrs.Feature.DirectoryDispatch;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Lokad.Cqrs.Feature.AzurePartition
 {
-    using DirectoryDispatcherFactory = Func<IComponentContext, MessageActivationInfo[], IMessageDispatchStrategy, ISingleThreadMessageDispatcher>;
-
     public sealed class AzurePartitionModule : HideObjectMembersFromIntelliSense
     {
         readonly HashSet<string> _queueNames = new HashSet<string>();
@@ -36,9 +34,11 @@ namespace Lokad.Cqrs.Feature.AzurePartition
 
         Func<IComponentContext, ISingleThreadMessageDispatcher> _dispatcher;
 
+
         public AzurePartitionModule(IAzureStorageConfig config, string[] queueNames)
         {
             DispatchAsEvents();
+            
             QueueVisibility(30000);
 
             _config = config;
@@ -47,6 +47,8 @@ namespace Lokad.Cqrs.Feature.AzurePartition
             Quarantine(c => new MemoryQuarantine());
             DecayPolicy(TimeSpan.FromSeconds(2));
         }
+
+
 
         public void DispatcherIs(Func<IComponentContext, ISingleThreadMessageDispatcher> factory)
         {
@@ -82,20 +84,16 @@ namespace Lokad.Cqrs.Feature.AzurePartition
             _decayPolicy = decayPolicy;
         }
 
-        void ResolveDirectoryDispatcher(DirectoryDispatcherFactory factory, Action<MessageDirectoryFilter> optionalFilter = null)
+        /// <summary>
+        /// Defines dispatcher as lambda method that is resolved against the container
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        public void DispatcherIsLambda(Func<IComponentContext, Action<ImmutableEnvelope>> factory)
         {
-            _dispatcher = ctx =>
+            _dispatcher = context =>
             {
-                var builder = ctx.Resolve<MessageDirectoryBuilder>();
-                var filter = new MessageDirectoryFilter();
-                if (null != optionalFilter)
-                {
-                    optionalFilter(filter);
-                }
-                var map = builder.BuildActivationMap(filter.DoesPassFilter);
-
-                var strategy = ctx.Resolve<IMessageDispatchStrategy>();
-                return factory(ctx, map, strategy);
+                var lambda = factory(context);
+                return new ActionDispatcher(lambda);
             };
         }
 
@@ -107,7 +105,8 @@ namespace Lokad.Cqrs.Feature.AzurePartition
         /// </summary>
         public void DispatchAsEvents(Action<MessageDirectoryFilter> optionalFilter = null)
         {
-            ResolveDirectoryDispatcher((ctx, map, strategy) => new DispatchOneEvent(map, ctx.Resolve<ISystemObserver>(), strategy), optionalFilter);
+            var action = optionalFilter ?? (x => { });
+            _dispatcher = ctx => DirectoryDispatchFactory.OneEvent(ctx, action);
         }
 
         /// <summary>
@@ -117,11 +116,13 @@ namespace Lokad.Cqrs.Feature.AzurePartition
         /// </summary>
         public void DispatchAsCommandBatch(Action<MessageDirectoryFilter> optionalFilter = null)
         {
-            ResolveDirectoryDispatcher((ctx, map, strategy) => new DispatchCommandBatch(map, strategy), optionalFilter);
+            var action = optionalFilter ?? (x => { });
+            _dispatcher = ctx => DirectoryDispatchFactory.CommandBatch(ctx, action);
         }
+        
         public void DispatchToRoute(Func<ImmutableEnvelope,string> route)
         {
-            DispatcherIs(ctx => new DispatchMessagesToRoute(ctx.Resolve<QueueWriterRegistry>(), route));
+            DispatcherIs((ctx) => new DispatchMessagesToRoute(ctx.Resolve<QueueWriterRegistry>(), route));
         }
 
         IEngineProcess BuildConsumingProcess(IComponentContext context)

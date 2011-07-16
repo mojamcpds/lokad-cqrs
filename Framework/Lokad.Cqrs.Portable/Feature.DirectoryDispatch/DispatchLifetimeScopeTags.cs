@@ -7,7 +7,7 @@
 
 using Autofac;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     /// <summary>
     /// Tags used to differentiate lifetime scopes for handling message envelopes.

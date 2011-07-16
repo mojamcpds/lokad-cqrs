@@ -7,9 +7,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lokad.Cqrs.Core.Dispatch;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     /// <summary>
     /// Dispatch command batches to a single consumer. Uses sliding cache to 
@@ -17,7 +18,6 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
     /// </summary>
     public class DispatchCommandBatch : ISingleThreadMessageDispatcher
     {
-        
         readonly IDictionary<Type, Type> _messageConsumers = new Dictionary<Type, Type>();
         readonly MessageActivationInfo[] _messageDirectory;
         readonly IMessageDispatchStrategy _strategy;
@@ -56,7 +56,7 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
 
         public void Init()
         {
-            DispatcherUtil.ThrowIfCommandHasMultipleConsumers(_messageDirectory);
+            ThrowIfCommandHasMultipleConsumers(_messageDirectory);
             foreach (var messageInfo in _messageDirectory)
             {
                 if (messageInfo.AllConsumers.Length > 0)
@@ -64,6 +64,22 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
                     _messageConsumers[messageInfo.MessageType] = messageInfo.AllConsumers[0];
                 }
             }
+        }
+
+        static void ThrowIfCommandHasMultipleConsumers(IEnumerable<MessageActivationInfo> commands)
+        {
+            var multipleConsumers = commands
+                .Where(c => c.AllConsumers.Length > 1)
+                .Select(c => c.MessageType.FullName)
+                .ToArray();
+
+            if (!multipleConsumers.Any())
+                return;
+
+            var joined = string.Join("; ", multipleConsumers);
+
+            throw new InvalidOperationException(
+                "These messages have multiple consumers. Did you intend to declare them as events? " + joined);
         }
     }
 }

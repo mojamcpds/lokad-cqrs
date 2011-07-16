@@ -7,8 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using Autofac;
 using Autofac.Core;
 using Lokad.Cqrs.Build.Engine;
@@ -17,8 +15,7 @@ using Lokad.Cqrs.Core.Envelope;
 using Lokad.Cqrs.Core.Outbox;
 using Lokad.Cqrs.Core.Reactive;
 using Lokad.Cqrs.Core.Serialization;
-using Lokad.Cqrs.Evil;
-using Lokad.Cqrs.Feature.Dispatch.Directory;
+using Lokad.Cqrs.Feature.DirectoryDispatch;
 
 namespace Lokad.Cqrs.Build.Client
 {
@@ -54,22 +51,12 @@ namespace Lokad.Cqrs.Build.Client
 
 
         IEnvelopeSerializer _envelopeSerializer = new EnvelopeSerializerWithDataContracts();
-        Func<IDataSerializer> _dataSerializer = DefaultContractsSerializer;
+        Func<Type[], IDataSerializer> _dataSerializer = types => new DataSerializerWithDataContracts(types);
 
-        static IDataSerializer DefaultContractsSerializer()
+
+        void IAdvancedClientBuilder.DataSerializer(Func<Type[], IDataSerializer> serializer)
         {
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(AssemblyScanEvil.IsUserAssembly)
-                .SelectMany(a => a.GetExportedTypes())
-                .Where(t => !t.IsAbstract)
-                .Where(t => t.IsDefined(typeof(DataContractAttribute), false));
-            return new DataSerializerWithDataContracts(types.ToArray());
-        }
-
-
-        void IAdvancedClientBuilder.DataSerializer(IDataSerializer serializer)
-        {
-            _dataSerializer = () => serializer;
+            _dataSerializer = serializer;
         }
 
         void IAdvancedClientBuilder.EnvelopeSerializer(IEnvelopeSerializer serializer)
@@ -100,6 +87,7 @@ namespace Lokad.Cqrs.Build.Client
             config(_domain);
         }
 
+        readonly SerializationContractRegistry _serializationList = new SerializationContractRegistry();
 
         public CqrsClient Build()
         {
@@ -130,10 +118,10 @@ namespace Lokad.Cqrs.Build.Client
             var system = new SystemObserver(_observers.ToArray());
             reg.Register<ISystemObserver>(system);
             // domain should go before serialization
-            _domain.Configure(reg);
+            _domain.Configure(reg, _serializationList);
             _storageModule.Configure(reg);
 
-            var serializer = _dataSerializer();
+            var serializer = _dataSerializer(_serializationList.GetAndMakeReadOnly());
             var streamer = new EnvelopeStreamer(_envelopeSerializer, serializer);
 
 

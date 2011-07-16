@@ -15,12 +15,10 @@ using Lokad.Cqrs.Core;
 using Lokad.Cqrs.Core.Dispatch;
 using Lokad.Cqrs.Core.Outbox;
 using Lokad.Cqrs.Evil;
-using Lokad.Cqrs.Feature.Dispatch.Directory;
+using Lokad.Cqrs.Feature.DirectoryDispatch;
 
 namespace Lokad.Cqrs.Feature.FilePartition
 {
-    using LegacyDispatcherFactory = Func<IComponentContext, MessageActivationInfo[], IMessageDispatchStrategy, ISingleThreadMessageDispatcher>;
-
     public sealed class FilePartitionModule : HideObjectMembersFromIntelliSense
     {
         readonly FileStorageConfig _fullPath;
@@ -29,7 +27,6 @@ namespace Lokad.Cqrs.Feature.FilePartition
         
 
         Func<IComponentContext, ISingleThreadMessageDispatcher> _dispatcher;
-
         Func<IComponentContext, IEnvelopeQuarantine> _quarantineFactory;
 
         /// <summary>
@@ -64,22 +61,19 @@ namespace Lokad.Cqrs.Feature.FilePartition
             DecayPolicy(TimeSpan.FromMilliseconds(100));
         }
 
-        void ResolveLegacyDispatcher(LegacyDispatcherFactory factory, Action<MessageDirectoryFilter> optionalFilter = null)
+        /// <summary>
+        /// Defines dispatcher as lambda method that is resolved against the container
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        public void DispatcherIsLambda(Func<IComponentContext, Action<ImmutableEnvelope>> factory)
         {
-            _dispatcher = ctx =>
+            _dispatcher = context =>
             {
-                var builder = ctx.Resolve<MessageDirectoryBuilder>();
-                var filter = new MessageDirectoryFilter();
-                if (null != optionalFilter)
-                {
-                    optionalFilter(filter);
-                }
-                var map = builder.BuildActivationMap(filter.DoesPassFilter);
-
-                var strategy = ctx.Resolve<IMessageDispatchStrategy>();
-                return factory(ctx, map, strategy);
+                var lambda = factory(context);
+                return new ActionDispatcher(lambda);
             };
         }
+        
 
         public void DispatcherIs(Func<IComponentContext, ISingleThreadMessageDispatcher> factory)
         {
@@ -92,14 +86,26 @@ namespace Lokad.Cqrs.Feature.FilePartition
             _quarantineFactory = factory;
         }
 
+        /// <summary>
+        /// <para>Wires <see cref="DispatchOneEvent"/> implementation of <see cref="ISingleThreadMessageDispatcher"/> 
+        /// into this partition. It allows dispatching a single event to zero or more consumers.</para>
+        /// <para> Additional information is available in project docs.</para>
+        /// </summary>
         public void DispatchAsEvents(Action<MessageDirectoryFilter> optionalFilter = null)
         {
-            ResolveLegacyDispatcher((ctx, map, strategy) => new DispatchOneEvent(map, ctx.Resolve<ISystemObserver>(), strategy), optionalFilter);
+            var action = optionalFilter ?? (x => { });
+            _dispatcher = ctx => DirectoryDispatchFactory.OneEvent(ctx, action);
         }
 
+        /// <summary>
+        /// <para>Wires <see cref="DispatchCommandBatch"/> implementation of <see cref="ISingleThreadMessageDispatcher"/> 
+        /// into this partition. It allows dispatching multiple commands (in a single envelope) to one consumer each.</para>
+        /// <para> Additional information is available in project docs.</para>
+        /// </summary>
         public void DispatchAsCommandBatch(Action<MessageDirectoryFilter> optionalFilter = null)
         {
-            ResolveLegacyDispatcher((ctx, map, strategy) => new DispatchCommandBatch(map, strategy), optionalFilter);
+            var action = optionalFilter ?? (x => { });
+            _dispatcher = ctx => DirectoryDispatchFactory.CommandBatch(ctx, action);
         }
 
         public void DispatchToRoute(Func<ImmutableEnvelope, string> route)

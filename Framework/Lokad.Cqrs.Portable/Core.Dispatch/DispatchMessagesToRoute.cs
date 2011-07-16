@@ -82,23 +82,4 @@ namespace Lokad.Cqrs.Core.Dispatch
             }
         }
     }
-
-    public sealed class ActionDispatcher : ISingleThreadMessageDispatcher
-    {
-        readonly Action<ImmutableEnvelope> _func;
-        public ActionDispatcher(Action<ImmutableEnvelope> func)
-        {
-            _func = func;
-        }
-
-        public void DispatchMessage(ImmutableEnvelope message)
-        {
-            _func(message);
-        }
-
-        public void Init()
-        {
-            
-        }
-    }
 }

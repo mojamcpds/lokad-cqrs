@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
+using Autofac;
 using Lokad.Cqrs.Build.Engine;
 using Lokad.Cqrs.Core.Dispatch.Events;
 using NUnit.Framework;
 using System.Linq;
-using Autofac;
 
 namespace Lokad.Cqrs
 {
@@ -17,7 +17,7 @@ namespace Lokad.Cqrs
         [Test]
         public void Test_memory_partition()
         {
-            TestDirectoryConfiguration(c => c.Memory(m =>
+            TestConfiguration(c => c.Memory(m =>
                 {
                     m.AddMemorySender("test-accelerated");
                     m.AddMemoryProcess("test-accelerated");
@@ -25,23 +25,23 @@ namespace Lokad.Cqrs
         }
 
         [Test]
-        public void Test_memory_partition_fast()
+        public void Test_memory_partition_optimized()
         {
-            TestDirectoryConfiguration(c =>
+            TestConfiguration(c =>
                 {
-                    c.UseProtoBufSerialization(new[] { typeof(UsualMessage)});
+                    c.UseProtoBufSerialization();
                     c.Memory(m =>
                         {
                             m.AddMemorySender("test-accelerated");
-                            m.AddMemoryProcess("test-accelerated", p => p.DispatcherIsLambda(BuildConsumer));
+                            m.AddMemoryProcess("test-accelerated", x => x.DispatcherIsLambda(Factory));
                         });
                 });
         }
 
-        static Action<ImmutableEnvelope> BuildConsumer(IComponentContext context)
+        static Action<ImmutableEnvelope> Factory(IComponentContext componentContext)
         {
-            var sender = context.Resolve<IMessageSender>();
-            return (envelope => sender.SendOne(envelope.Items[0].Content));
+            var sender = componentContext.Resolve<IMessageSender>();
+            return envelope => sender.SendOne(envelope.Items[0].Content);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Lokad.Cqrs
         {
             var config = AzureStorage.CreateConfigurationForDev();
             WipeAzureAccount.Fast(s => s.StartsWith("test-accelerated"), config);
-            TestDirectoryConfiguration(c => c.Azure(m =>
+            TestConfiguration(c => c.Azure(m =>
                 {
                     m.AddAzureSender(config,"test-accelerated");
                     m.AddAzureProcess(config,"test-accelerated");
@@ -80,8 +80,7 @@ namespace Lokad.Cqrs
             }
         }
 
-
-        static void TestDirectoryConfiguration(Action<CqrsEngineBuilder> build)
+        static void TestConfiguration(Action<CqrsEngineBuilder> build)
         {
             var builder = new CqrsEngineBuilder();
             build(builder);

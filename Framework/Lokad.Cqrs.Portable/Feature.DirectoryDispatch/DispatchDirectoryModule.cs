@@ -12,12 +12,13 @@ using System.Transactions;
 using Autofac;
 using Autofac.Core;
 using Lokad.Cqrs.Core;
+using Lokad.Cqrs.Core.Serialization;
 using Lokad.Cqrs.Evil;
-using Lokad.Cqrs.Feature.Dispatch.Directory.Default;
+using Lokad.Cqrs.Feature.DirectoryDispatch.Default;
 
 // ReSharper disable UnusedMember.Global
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     /// <summary>
     /// Module for building CQRS domains.
@@ -27,7 +28,6 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
         readonly DomainAssemblyScanner _scanner = new DomainAssemblyScanner();
         IMethodContextManager _contextManager;
         MethodInvokerHint _hint;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DispatchDirectoryModule"/> class.
@@ -89,13 +89,22 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
         }
 
 
-        public void Configure(IComponentRegistry container)
+        public void Configure(IComponentRegistry container, SerializationContractRegistry types)
         {
             _scanner.Constrain(_hint);
             var mappings = _scanner.Build(_hint.ConsumerTypeDefinition);
+
+
+            var messageTypes = mappings
+                .Select(m => m.Message)
+                .Where(m => !m.IsAbstract)
+                .Distinct();
+
+            types.AddRange(messageTypes);
+
             var builder = new MessageDirectoryBuilder(mappings);
 
-            var contextProvider = _contextManager.GetContextProvider();
+            var provider = _contextManager.GetContextProvider();
 
             var consumers = mappings
                 .Select(x => x.Consumer)
@@ -108,7 +117,7 @@ namespace Lokad.Cqrs.Feature.Dispatch.Directory
             {
                 cb.RegisterType(consumer);
             }
-            cb.RegisterInstance(contextProvider).AsSelf();
+            cb.RegisterInstance(provider).AsSelf();
             cb.Update(container);
             container.Register<IMessageDispatchStrategy>(c =>
                 {

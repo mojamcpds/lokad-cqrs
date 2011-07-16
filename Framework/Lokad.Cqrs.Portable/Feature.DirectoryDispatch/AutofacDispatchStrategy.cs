@@ -11,7 +11,7 @@ using System.Transactions;
 using Autofac;
 using Lokad.Cqrs.Evil;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     public sealed class AutofacDispatchStrategy : IMessageDispatchStrategy
     {
