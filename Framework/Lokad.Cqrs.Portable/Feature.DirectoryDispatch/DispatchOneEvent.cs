@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Lokad.Cqrs.Core.Dispatch;
 using Lokad.Cqrs.Core.Dispatch.Events;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     ///<summary>
     /// Dispatcher that sends a single event to multiple consumers within this worker.

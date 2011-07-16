@@ -10,7 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     public sealed class MethodInvokerHint
     {

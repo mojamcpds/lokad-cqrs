@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Lokad.Cqrs.Feature.Dispatch.Directory
+namespace Lokad.Cqrs.Feature.DirectoryDispatch
 {
     public sealed class MessageDirectoryFilter
     {

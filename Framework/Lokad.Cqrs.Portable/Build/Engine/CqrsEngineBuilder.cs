@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Autofac;
 using Autofac.Core;
 using Lokad.Cqrs.Core.Dispatch;
@@ -16,9 +15,7 @@ using Lokad.Cqrs.Core.Outbox;
 using Lokad.Cqrs.Core.Reactive;
 using Lokad.Cqrs.Core.Serialization;
 using Lokad.Cqrs.Core;
-using System.Linq;
-using Lokad.Cqrs.Evil;
-using Lokad.Cqrs.Feature.Dispatch.Directory;
+using Lokad.Cqrs.Feature.DirectoryDispatch;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 
@@ -29,11 +26,19 @@ namespace Lokad.Cqrs.Build.Engine
     /// </summary>
     public class CqrsEngineBuilder : HideObjectMembersFromIntelliSense, IAdvancedEngineBuilder
     {
+        readonly SerializationContractRegistry _dataSerialization = new SerializationContractRegistry();
         IEnvelopeSerializer _envelopeSerializer = new EnvelopeSerializerWithDataContracts();
-        Func<IDataSerializer> _dataSerializer = DefaultContractsSerializer;
-        readonly DispatchDirectoryModule _domain = new DispatchDirectoryModule();
+        Func<Type[], IDataSerializer> _dataSerializer = types => new DataSerializerWithDataContracts(types);
         readonly StorageModule _storage = new StorageModule();
 
+        Action<IComponentRegistry, SerializationContractRegistry> _directory;
+
+        public CqrsEngineBuilder()
+        {
+            // default
+            _directory =
+                (registry, contractRegistry) => new DispatchDirectoryModule().Configure(registry, contractRegistry);
+        }
 
         readonly IList<Func<IComponentContext, IQueueWriterFactory>> _activators = new List<Func<IComponentContext, IQueueWriterFactory>>();
 
@@ -43,19 +48,9 @@ namespace Lokad.Cqrs.Build.Engine
             };
 
 
-        static IDataSerializer DefaultContractsSerializer()
+        void IAdvancedEngineBuilder.CustomDataSerializer(Func<Type[], IDataSerializer> serializer)
         {
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(AssemblyScanEvil.IsUserAssembly)
-                .SelectMany(a => a.GetExportedTypes())
-                .Where(t => !t.IsAbstract)
-                .Where(t => t.IsDefined(typeof(DataContractAttribute), false));
-            return new DataSerializerWithDataContracts(types.ToArray());
-        }
-
-        void IAdvancedEngineBuilder.CustomDataSerializer(IDataSerializer serializer)
-        {
-            _dataSerializer = () => serializer;
+            _dataSerializer = serializer;
         }
 
         void IAdvancedEngineBuilder.CustomEnvelopeSerializer(IEnvelopeSerializer serializer)
@@ -84,7 +79,13 @@ namespace Lokad.Cqrs.Build.Engine
         /// <returns>same builder for inline multiple configuration statements</returns>
         public void Domain(Action<DispatchDirectoryModule> config)
         {
-            config(_domain);
+            _directory = (registry, contractRegistry) =>
+                {
+                    var m = new DispatchDirectoryModule();
+                    config(m);
+                    m.Configure(registry, contractRegistry);
+                };
+
         }
 
         readonly ContainerBuilder _builder = new ContainerBuilder();
@@ -119,6 +120,10 @@ namespace Lokad.Cqrs.Build.Engine
             Advanced.RegisterModule(m);
         }
 
+        /// <summary>
+        /// Adds configuration to the storage module.
+        /// </summary>
+        /// <param name="configure">The configure.</param>
         public void Storage(Action<StorageModule> configure)
         {
             configure(_storage);
@@ -158,12 +163,12 @@ namespace Lokad.Cqrs.Build.Engine
             reg.Register(system);
             
             // domain should go before serialization
-            _domain.Configure(reg);
+            _directory(reg, _dataSerialization);
             _storage.Configure(reg);
 
-            var dataSerializer = _dataSerializer();
+            var types = _dataSerialization.GetAndMakeReadOnly();
+            var dataSerializer = _dataSerializer(types);
             var streamer = new EnvelopeStreamer(_envelopeSerializer, dataSerializer);
-
             
             reg.Register(BuildRegistry);
             reg.Register(dataSerializer);

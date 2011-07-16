@@ -26,7 +26,5 @@ namespace Lokad.Cqrs.Evil
 
             return true;
         }
-
-        
     }
 }
